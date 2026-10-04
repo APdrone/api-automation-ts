@@ -4,7 +4,8 @@
   "description": "API Automation Suite powered by @script-crux core libraries",
   "type": "module",
   "scripts": {
-    "test": "node --test --import tsx src/tests/*.spec.ts"
+    "test": "node --test --import tsx src/tests/**/*.spec.ts",
+    "test:microservices": "node --test --import tsx src/tests/microservices/*.spec.ts"
   },
   "keywords": ["api-testing", "axios", "typescript"],
   "author": "",
