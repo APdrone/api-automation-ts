@@ -1,0 +1,69 @@
+name: BillPulse API Test Automation Pipeline
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+  workflow_dispatch:
+
+jobs:
+  api-tests:
+    name: Execute REST & Microservices Contract Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Checkout API test suite into ./axios-ts
+      - name: Checkout API Test Repository
+        uses: actions/checkout@v4
+        with:
+          path: axios-ts
+
+      # 2. Checkout private core-lib into ./core-lib
+      - name: Checkout Private Core Library (@script-crux)
+        uses: actions/checkout@v4
+        with:
+          repository: 'APdrone/automation-core-lib'
+          token: ${{ secrets.GH_PAT }}
+          path: core-lib
+
+      # 3. Checkout private BillPulse target application into ./app-billpulse
+      - name: Checkout Private Target Application (BillPulse)
+        uses: actions/checkout@v4
+        with:
+          repository: 'APdrone/billpulse-fintech-app'
+          token: ${{ secrets.GH_PAT }}
+          path: app-billpulse
+
+      # 4. Setup Node.js runtime & pnpm package manager
+      - name: Setup Node.js Runtime
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 11
+
+      # 5. Build Core Library Packages
+      - name: Build Core Library Packages
+        run: |
+          cd core-lib
+          pnpm install --ignore-scripts
+          pnpm run build
+
+      # 6. Start BillPulse Microservices Cluster & Wait for Healthy Status
+      - name: Start BillPulse Microservices Cluster
+        run: |
+          cd app-billpulse
+          npm ci
+          npm run dev:server &
+          npx wait-on http://localhost:4000/api/testing/health --timeout 60000
+
+      # 7. Install Dependencies & Run API Tests
+      - name: Run Axios API Tests
+        run: |
+          cd axios-ts
+          npm ci
+          npm test
