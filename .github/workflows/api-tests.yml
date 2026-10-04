@@ -58,6 +58,7 @@ jobs:
         run: |
           cd app-billpulse
           npm ci
+          npm run build:contracts
           npm run dev:server &
           npx wait-on http://localhost:4000/api/testing/health --timeout 60000
 
