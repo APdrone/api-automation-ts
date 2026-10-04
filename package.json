@@ -12,6 +12,7 @@
   "license": "ISC",
   "dependencies": {
     "@script-crux/adapter-axios": "file:../core-lib/packages/adapter-axios",
+    "@script-crux/core-api": "file:../core-lib/packages/core-api",
     "@script-crux/core-shared": "file:../core-lib/packages/core-shared",
     "axios": "^1.7.9"
   },

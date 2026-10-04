@@ -1,8 +1,27 @@
-import axios from 'axios';
+import { BaseAxiosClient } from '@script-crux/adapter-axios';
+import { TestLogger } from '@script-crux/core-shared';
 
 export interface IAuthStrategy {
   getAuthHeader(baseUrl: string): Promise<string>;
   getRoleName(): string;
+}
+
+class InternalAuthClient extends BaseAxiosClient {
+  constructor(baseUrl: string) {
+    super({
+      baseUrl,
+      apiTimeout: 5000,
+      maxRetries: 2,
+    });
+  }
+
+  public async requestToken(email: string, pass: string): Promise<string> {
+    const res = await this.post<{ token: string }>('/api/auth/login', {
+      email,
+      password: pass,
+    });
+    return res.token;
+  }
 }
 
 export class BearerTokenAuthStrategy implements IAuthStrategy {
@@ -16,11 +35,9 @@ export class BearerTokenAuthStrategy implements IAuthStrategy {
 
   public async getAuthHeader(baseUrl: string): Promise<string> {
     if (!this.cachedToken) {
-      const res = await axios.post(`${baseUrl}/api/auth/login`, {
-        email: this.email,
-        password: this.password,
-      });
-      this.cachedToken = res.data.token;
+      TestLogger.info(`[AuthStrategy] Minting token via BaseAxiosClient for persona [${this.roleName}]`);
+      const client = new InternalAuthClient(baseUrl);
+      this.cachedToken = await client.requestToken(this.email, this.password);
     }
     return `Bearer ${this.cachedToken}`;
   }
