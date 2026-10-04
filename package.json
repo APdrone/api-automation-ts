@@ -1,16 +1,22 @@
 {
   "name": "axios-ts",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "API Automation Suite powered by @script-crux core libraries",
+  "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node --test --import tsx src/tests/*.spec.ts"
   },
-  "keywords": [],
+  "keywords": ["api-testing", "axios", "typescript"],
   "author": "",
   "license": "ISC",
-  "type": "commonjs",
   "dependencies": {
-    "axios": "^1.18.0"
+    "@script-crux/adapter-axios": "file:../core-lib/packages/adapter-axios",
+    "@script-crux/core-shared": "file:../core-lib/packages/core-shared",
+    "axios": "^1.7.9"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.6.0"
   }
 }
