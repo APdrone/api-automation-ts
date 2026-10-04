@@ -70,8 +70,9 @@ npm install
 ### 3. Running API Tests
 
 ```bash
-# Run all 23 API test suites
+# Run all 31 API test suites
 npm test
+
 
 # Run a specific test suite
 npm test -- src/tests/telemetry-and-contract-validation.spec.ts
