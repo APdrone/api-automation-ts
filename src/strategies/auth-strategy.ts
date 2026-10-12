@@ -60,6 +60,10 @@ export class AuthStrategies {
     return new BearerTokenAuthStrategy('viewer@billpulse.io', 'Password123!', 'VIEWER');
   }
 
+  public static payer(): IAuthStrategy {
+    return new BearerTokenAuthStrategy('payer@billpulse.io', 'Password123!', 'PAYER');
+  }
+
   public static anonymous(): IAuthStrategy {
     return {
       async getAuthHeader() {
