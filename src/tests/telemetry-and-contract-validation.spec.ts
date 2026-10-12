@@ -4,6 +4,8 @@ import { BillPulseClient } from '../clients/billPulseClient.js';
 import { ContractValidationError } from '@script-crux/adapter-axios';
 import { InvoiceFactory } from '../factories/invoice.factory.js';
 
+import { validateInvoiceResponse } from '../schemas/invoice.schema.js';
+
 describe('Core-Lib: Distributed Tracing, Telemetry SLA & Contract Validation', () => {
   const client = new BillPulseClient({ baseUrl: 'http://localhost:4000', defaultSlaThresholdMs: 3000 });
 
@@ -23,16 +25,10 @@ describe('Core-Lib: Distributed Tracing, Telemetry SLA & Contract Validation', (
     const payload = InvoiceFactory.createStandardInvoice();
     const created = await client.createInvoice(payload);
 
-
-    // Call raw get with custom schema validation
+    // Call raw get with modular schema validation
     const invoice = await (client as any).getAndValidate(
       `/api/invoices/${created.id}`,
-      (data: any) => {
-        if (!data.id || !data.invoiceNumber || typeof data.totalAmount !== 'number') {
-          throw new Error('Invalid Invoice Schema');
-        }
-        return data;
-      },
+      validateInvoiceResponse,
       { headers: await (client as any).getHeaders() }
     );
 

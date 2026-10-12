@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "test": "node --test --import tsx src/tests/**/*.spec.ts",
-    "test:microservices": "node --test --import tsx src/tests/microservices/*.spec.ts"
+    "test:microservices": "node --test --import tsx src/tests/microservices/*.spec.ts",
+    "test:sandbox": "node --test --import tsx src/sandbox/**/*.spec.ts"
   },
   "keywords": ["api-testing", "axios", "typescript"],
   "author": "",
